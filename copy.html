@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Copy by Image</title>
+<style>
+body {
+  margin: 0;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+img {
+  cursor: pointer;
+  max-width: 100%;
+}
+
+#temp {
+  position: absolute;
+  left: -9999px;
+}
+</style>
+</head>
+<body>
+
+<!-- Ảnh bấm -->
+<img src="https://drive.google.com/drive/u/1/folders/1YM0zvyhzg2wJSSk3-4I-nxKwmjf5lREs" alt="Copy" onclick="copyContent()">
+
+<!-- Textarea ẩn -->
+<textarea id="temp"></textarea>
+
+<script>
+function copyContent() {
+  const hiddenContent = '=IMAGE("https://drive.google.com/drive/u/1/folders/1YM0zvyhzg2wJSSk3-4I-nxKwmjf5lREs")';
+
+  const temp = document.getElementById("temp");
+  temp.value = hiddenContent;  // Chỉ copy giá trị này
+  temp.select();
+  temp.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+
+  alert("✅ Đã sao chép");
+}
+</script>
+
+</body>
+</html>
