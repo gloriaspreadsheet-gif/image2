@@ -1,49 +1,101 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Copy by Image</title>
-<style>
-body {
-  margin: 0;
-  background: transparent;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+  <meta charset="UTF-8">
+  <title>Image Copy Gallery</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-img {
-  cursor: pointer;
-  max-width: 100%;
-}
+  <style>
+    body {
+      margin: 0;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+      background: transparent;
+    }
 
-#temp {
-  position: absolute;
-  left: -9999px;
-}
-</style>
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: auto;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: transform 0.15s ease;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      z-index: 9999;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
 
-<!-- Ảnh bấm -->
-<img src="https://drive.google.com/uc?export=view&id=1VsSJzM3JLAI-i0y4ImsZdtTkpUJP6yKD" alt="Copy" onclick="copyContent()">
-
-<!-- Textarea ẩn -->
-<textarea id="temp"></textarea>
+<div class="gallery" id="gallery"></div>
+<div class="toast" id="toast">✅ Đã sao chép</div>
 
 <script>
-function copyContent() {
-  const hiddenContent = '=IMAGE("https://drive.google.com/uc?export=view&id=1VsSJzM3JLAI-i0y4ImsZdtTkpUJP6yKD")';
+/* ============================
+   🔧 PHẦN BẠN CẦN CHỈNH
+   ============================ */
 
-  const temp = document.getElementById("temp");
-  temp.value = hiddenContent;  // Chỉ copy giá trị này
-  temp.select();
-  temp.setSelectionRange(0, 99999);
-  document.execCommand("copy");
+/*
+  Mỗi dòng là 1 ảnh + 1 nội dung copy
+  Format:
+  { img: "LINK_ẢNH_TRỰC_TIẾP", copy: "NỘI DUNG COPY" },
+*/
 
-  alert("✅ Đã sao chép");
-}
+const items = [
+  { img: "https://drive.google.com/uc?export=view&id=1VsSJzM3JLAI-i0y4ImsZdtTkpUJP6yKD", copy: "=IMAGE("https://drive.google.com/uc?export=view&id=1VsSJzM3JLAI-i0y4ImsZdtTkpUJP6yKD")" },
+  { img: "https://drive.google.com/uc?export=view&id=1ZYhod3Spb0Rx6sflXQ8g2lR2PBqOsm-W", copy: "=IMAGE("https://drive.google.com/uc?export=view&id=1ZYhod3Spb0Rx6sflXQ8g2lR2PBqOsm-W")" },
+  { img: "https://drive.google.com/uc?export=view&id=1HiV7USQh3vdhIN5IhYAVEvsBV4MSC6rz", copy: "=IMAGE("https://drive.google.com/uc?export=view&id=1HiV7USQh3vdhIN5IhYAVEvsBV4MSC6rz")" }
+  // 👉 DÁN 400 DÒNG Ở ĐÂY
+];
+
+/* ============================
+   🚀 KHÔNG CHẠM PHẦN DƯỚI
+   ============================ */
+
+const gallery = document.getElementById("gallery");
+const toast = document.getElementById("toast");
+
+items.forEach(item => {
+  const img = document.createElement("img");
+  img.src = item.img;
+  img.loading = "lazy";
+
+  img.onclick = () => {
+    navigator.clipboard.writeText(item.copy).then(() => {
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 1200);
+    });
+  };
+
+  gallery.appendChild(img);
+});
 </script>
 
 </body>
